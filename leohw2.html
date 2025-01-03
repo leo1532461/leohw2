@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1-100 終極密碼</title>
+    <style>
+       
+        .container {
+            max-width: 600px;
+            margin:  auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+        
+        }
+
+        h1 {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        .range {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .display {
+            height: 50px;
+            margin: 20px 0;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            line-height: 50px;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .key {
+            font-size: 18px;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+      
+        .new-game {
+            font-size: 16px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .new-game:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>1-100 終極密碼</h1>
+        <div class="range">範圍：<span id="range">1 - 100</span></div>
+        <div class="display" id="display"></div>
+        <div class="keyboard">
+            <button class="key">7</button>
+            <button class="key">8</button>
+            <button class="key">9</button>
+            <button class="key">4</button>
+            <button class="key">5</button>
+            <button class="key">6</button>
+            <button class="key">1</button>
+            <button class="key">2</button>
+            <button class="key">3</button>
+            <button class="key action clear">清除</button>
+            <button class="key">0</button>
+            <button class="key action guess">猜測</button>
+        </div>
+        <button class="new-game">開始新遊戲</button>
+    </div>
+    <script>
+        
+        let lowerBound = 1;
+        let upperBound = 100;
+        let secretNumber = Math.floor(Math.random() * 100) + 1; 
+        let currentInput = "";
+
+        
+        function updateRange() {
+            document.getElementById("range").textContent = `${lowerBound} - ${upperBound}`;
+        }
+
+        
+        function resetGame() {
+            lowerBound = 1;
+            upperBound = 100;
+            secretNumber = Math.floor(Math.random() * 100) + 1;
+            currentInput = "";
+            document.getElementById("display").textContent = "請輸入數字";
+            updateRange();
+        }
+
+        
+        document.querySelector(".keyboard").addEventListener("click", (event) => {
+            const button = event.target;
+            const display = document.getElementById("display");
+
+            if (button.classList.contains("clear")) {
+                currentInput = ""; 
+                display.textContent = "請輸入數字";
+            } else if (button.classList.contains("guess")) {
+                const guess = parseInt(currentInput, 10); 
+                if (isNaN(guess) || guess < lowerBound || guess > upperBound) {
+                    display.textContent = "無效輸入";
+                    return;
+                }
+
+                if (guess === secretNumber) {
+                    display.textContent = `恭喜！密碼是 ${guess}`;
+                } else if (guess < secretNumber) {
+                    lowerBound = Math.max(lowerBound, guess + 1);
+                    display.textContent = "太小了";
+                } else {
+                    upperBound = Math.min(upperBound, guess - 1);
+                    display.textContent = "太大了";
+                }
+                currentInput = ""; 
+                updateRange(); 
+            } else {
+                currentInput += button.textContent; 
+                display.textContent = currentInput;
+            }
+        });
+
+      
+        document.querySelector(".new-game").addEventListener("click", (e) => { 
+            resetGame();});
+        updateRange();
+            
+    </script>
+</body>
+</html>
